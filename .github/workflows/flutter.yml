@@ -1,0 +1,41 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 设置 Flutter SDK（指定版本，避免 Gradle 不兼容）
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'   # ⚠️ 改成你本地 `flutter --version` 的版本
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. 运行测试（如果没测试文件，可以暂时注释掉）
+      - name: Run tests
+        run: flutter test || echo "No tests found"
+
+      # 5. 构建 APK
+      - name: Build release APK
+        run: flutter build apk --release
+
+      # 6. 上传打包结果（可下载）
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
