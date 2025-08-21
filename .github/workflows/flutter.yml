@@ -22,8 +22,9 @@ jobs:
           flutter-version: '3.19.0'   # ⚠️ 改成你本地 `flutter --version` 的版本
 
       # 3. 安装依赖
-      - name: Install dependencies
-        run: flutter pub get
+      - - name: Install dependencies
+          run: flutter config --no-cli-animations
+          working-directory: ./app
 
       # 4. 运行测试（如果没测试文件，可以暂时注释掉）
       - name: Run tests
